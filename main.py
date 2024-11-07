@@ -1,9 +1,26 @@
-import pandas as pd
-from stopwords import read_stopwords
-data_path = 'datasets\\sms_pub.csv'
-sms = pd.read_csv(data_path, encoding='utf-8')
-sms.head()
+import joblib
+from model import model_path
+from model import vectorizer_path
 
-stopwords_path = 'stopwords\\baidu_stopwords.txt'
-stopwords = read_stopwords(stopwords_path)
+nb = joblib.load(model_path)
+
+
+vect = joblib.load(vectorizer_path)
+
+message = input("请输入待被检测的短信：")
+
+message = [message]
+
+X_new_dtm = vect.transform(message)
+
+y_pred = nb.predict(X_new_dtm)
+
+match y_pred:
+    case 0:
+        print("这是一条正常短信，请尽快处理！")
+    case 1:
+        print("这是一条垃圾信息，请删除")
+
+
+
 
